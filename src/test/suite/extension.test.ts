@@ -19,9 +19,9 @@ suite('Extension Test Suite', () => {
 
 		activeTextEditor.options.tabSize = 4;
 
-		await activeTextEditor.edit((editBuilder) => {
-			editBuilder.insert(new vscode.Position(1, 0), '"foo": "bar"')
-		})
-		assert.strictEqual(activeTextEditor.document.getText(), '{\n  "foo": "bar"\n}')
+		activeTextEditor.selection = new vscode.Selection(1, 0, 1, 0)
+		await vscode.commands.executeCommand("paste", { text: '"foo": "bar"' })
+
+		assert.strictEqual(activeTextEditor.document.getText(), '{\n    "foo": "bar"\n}')
 	});
 });
