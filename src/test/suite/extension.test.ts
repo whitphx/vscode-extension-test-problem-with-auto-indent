@@ -8,8 +8,20 @@ import * as vscode from 'vscode';
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+	test('Pasting with auto-indent', async () => {
+		const doc = await vscode.workspace.openTextDocument({
+			content: "{\n\n}",
+			language: "json",
+		});
+		await vscode.window.showTextDocument(doc);
+		const activeTextEditor = vscode.window.activeTextEditor;
+		assert.ok(activeTextEditor);
+
+		activeTextEditor.options.tabSize = 4;
+
+		await activeTextEditor.edit((editBuilder) => {
+			editBuilder.insert(new vscode.Position(1, 0), '"foo": "bar"')
+		})
+		assert.strictEqual(activeTextEditor.document.getText(), '{\n  "foo": "bar"\n}')
 	});
 });
